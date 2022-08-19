@@ -1,3 +1,6 @@
 package server
 
-func SendPvData() {}
+import "github.com/semanticist21/go-pv-simulator/model"
+
+func SendPvData(dataPkg *model.DataPkg) {
+}

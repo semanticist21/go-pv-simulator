@@ -1,39 +1,55 @@
 package simulation
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"time"
 
 	"github.com/semanticist21/go-pv-simulator/model"
+	"github.com/semanticist21/go-pv-simulator/server"
 )
 
-func RunSimulation(secInterval int) *time.Ticker {
+func RunSimulation(secInterval int, userId int, password string) {
 	ticker := time.NewTicker(time.Second * time.Duration(secInterval))
+
+	fmt.Println("Simulation started.")
+
 	go func() {
 		for t := range ticker.C {
+			pvIdOne := 1
+			pvIdTwo := 2
+
 			baseTemp := genSimulatedTemp()
 			baseHz := genSimulatedHz()
 
-			pvOne := getPvWithData(1, baseTemp, baseHz, getSimulatedGen(t.Hour(), t.Minute()))
-			pvTwo := getPvWithData(2, baseTemp, baseHz, getSimulatedGen(t.Hour(), t.Minute()))
+			pvOne := getPvWithData(pvIdOne, baseTemp, baseHz, t)
+			pvTwo := getPvWithData(pvIdTwo, baseTemp, baseHz, t)
 
 			jsonA, _ := pvOne.MarshalJson()
 			jsonB, _ := pvTwo.MarshalJson()
+
+			fmt.Println(string(jsonA))
+			fmt.Println(string(jsonB))
+
+			dataA := &model.DataPkg{UserId: userId, Password: password, JsonData: string(jsonA)}
+			dataB := &model.DataPkg{UserId: userId, Password: password, JsonData: string(jsonB)}
+
+			go server.SendPvData(dataA)
+			go server.SendPvData(dataB)
 		}
 	}()
-
-	return ticker
 }
 
-func getPvWithData(id int, baseTemp float64, baseHz float64, gen float64) *model.Pv {
+func getPvWithData(id int, baseTemp float64, baseHz float64, t time.Time) *model.Pv {
+
 	pvId := id
-	pvGen := gen
+	pvGen := getSimulatedGen(t.Hour(), t.Minute())
 	pvHz := genSimulatedHz()
 	pvTemp := addSomeMinorTempDifference(baseTemp)
 	pvModuleTemp := addSomeMinorTempDifference(pvTemp)
 
-	newPv := &model.Pv{pvId, pvGen, pvHz, pvTemp, pvModuleTemp}
+	newPv := &model.Pv{Id: pvId, GenkW: pvGen, Hz: pvHz, Temp: pvTemp, ModuleTemp: pvModuleTemp, Time: timeToRFC3339(t)}
 
 	return newPv
 }
@@ -80,4 +96,8 @@ func genSimulatedTemp() float64 {
 
 func addSomeMinorTempDifference(num float64) float64 {
 	return num + 5*(rand.Float64()-0.5)
+}
+
+func timeToRFC3339(t time.Time) string {
+	return t.Format(time.RFC3339)
 }
