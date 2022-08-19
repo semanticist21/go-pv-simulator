@@ -13,7 +13,7 @@ import (
 func RunSimulation(secInterval int, userId int, password string) {
 	ticker := time.NewTicker(time.Second * time.Duration(secInterval))
 
-	fmt.Println("Simulation started.")
+	fmt.Println("Sending data has been started.")
 
 	go func() {
 		for t := range ticker.C {
@@ -29,11 +29,8 @@ func RunSimulation(secInterval int, userId int, password string) {
 			jsonA, _ := pvOne.MarshalJson()
 			jsonB, _ := pvTwo.MarshalJson()
 
-			fmt.Println(string(jsonA))
-			fmt.Println(string(jsonB))
-
-			dataA := &model.DataPkg{UserId: userId, Password: password, JsonData: string(jsonA)}
-			dataB := &model.DataPkg{UserId: userId, Password: password, JsonData: string(jsonB)}
+			dataA := &model.DataPkg{UserId: userId, Token: password, JsonData: jsonA}
+			dataB := &model.DataPkg{UserId: userId, Token: password, JsonData: jsonB}
 
 			go server.SendPvData(dataA)
 			go server.SendPvData(dataB)

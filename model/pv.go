@@ -8,7 +8,7 @@ type Pv struct {
 	Hz         float64
 	Temp       float64
 	ModuleTemp float64
-	Time string
+	Time       string
 }
 
 func (p *Pv) MarshalJson() ([]byte, error) {
@@ -17,6 +17,10 @@ func (p *Pv) MarshalJson() ([]byte, error) {
 
 type DataPkg struct {
 	UserId   int
-	Password string
-	JsonData string
+	Token    string
+	JsonData []byte
+}
+
+func (d *DataPkg) MarshalJson() ([]byte, error) {
+	return json.Marshal(&d)
 }
