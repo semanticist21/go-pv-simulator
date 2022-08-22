@@ -47,15 +47,18 @@ func main() {
 	UpperedAnswer := strings.ToUpper(answer)
 
 	var targetUrl *string = comm.Make(addr)
+	userId := 100
+	token := "test"
+
 	fmt.Printf("Target url is %s.\n", *targetUrl)
-	fmt.Println("Default user id : 100")
-	fmt.Println("Default user token : test")
+	fmt.Printf("Default user id : %d.\n", userId)
+	fmt.Printf("Default user token : %s.\n", token)
 
 	if strings.TrimSpace(UpperedAnswer) == "Y" {
 		server.StartTestServer(targetUrl)
 	}
 
-	simulation.RunSimulation(interval, 100, "test", targetUrl)
+	simulation.RunSimulation(interval, userId, token, targetUrl)
 
 	// endless loop
 	for {
