@@ -2,37 +2,23 @@ package server
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/semanticist21/go-pv-simulator/model"
 )
 
-var baseUrl string = "192.168.1.166:8080"
-
-func StartTestServer() {
+func StartTestServer(targetUrl *string) {
 	r := mux.NewRouter()
 	r.HandleFunc("/", defaultHandler)
 	r.HandleFunc("/users/{id}/data", DataRequestHandler)
 	http.Handle("/", r)
 
-	go http.ListenAndServe(baseUrl, nil)
+	go http.ListenAndServe(*targetUrl, nil)
 
 	fmt.Println("Server has been Initialized.")
-}
-
-func SendPvData(dataPkg *model.DataPkg) {
-	// url := fmt.Sprintf("%s/users/%d/data?token=%s", baseUrl, dataPkg.UserId, dataPkg.Token)
-	// buff := bytes.NewBuffer(dataPkg.JsonData)
-
-	// resp, err := http.Post(url, "application/json", buff)
-
-	// if err != nil {
-	// 	fmt.Println("error :" + err.Error())
-	// 	return
-	// }
-
-	// fmt.Printf("resp.Status: %v\n", resp.Status)
 }
 
 func defaultHandler(rw http.ResponseWriter, r *http.Request) {
@@ -42,7 +28,26 @@ func defaultHandler(rw http.ResponseWriter, r *http.Request) {
 func DataRequestHandler(rw http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
+		data := r.URL.Query()
+		token := data["token"][0]
 
+		if token != "test" {
+			fmt.Printf("token is not correct :: %s was given.\n", token)
+		}
+
+		reqBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		dataPkg := new(model.DataPkg)
+		dataPkg.UnMarshalJson(reqBody)
+
+		pvData := new(model.Pv)
+		pvData.UnMarshalJson(dataPkg.JsonData)
+
+		// fmt.Println(dataPkg.UserId)
+		// fmt.Println(dataPkg.Token)
 	}
 	// fmt.Println(r.URL.Path)
 	// fmt.Println(r.URL.RawQuery)
@@ -50,7 +55,7 @@ func DataRequestHandler(rw http.ResponseWriter, r *http.Request) {
 	// fmt.Println(r.URL.Query()) // url values
 	// fmt.Println(reflect.TypeOf(r.URL.Query()))
 
-	// token=test
+	// token=test``
 	// /users/3/data
 	// map[token:[test]]
 	// url.Values

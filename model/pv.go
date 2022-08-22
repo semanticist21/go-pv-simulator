@@ -3,24 +3,18 @@ package model
 import "encoding/json"
 
 type Pv struct {
-	Id         int
-	GenkW      float64
-	Hz         float64
-	Temp       float64
-	ModuleTemp float64
-	Time       string
+	Id         int     `json:"id"`
+	GenkW      float64 `json:"genkW"`
+	Hz         float64 `json:"hz"`
+	Temp       float64 `json:"temp"`
+	ModuleTemp float64 `json:"moduleTemp"`
+	Time       string  `json:"time"`
 }
 
 func (p *Pv) MarshalJson() ([]byte, error) {
-	return json.Marshal(&p)
+	return json.MarshalIndent(&p, "", " ")
 }
 
-type DataPkg struct {
-	UserId   int
-	Token    string
-	JsonData []byte
-}
-
-func (d *DataPkg) MarshalJson() ([]byte, error) {
-	return json.Marshal(&d)
+func (p *Pv) UnMarshalJson(data []byte) error {
+	return json.Unmarshal(data, p)
 }
