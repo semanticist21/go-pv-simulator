@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/semanticist21/go-pv-simulator/comm"
 	"github.com/semanticist21/go-pv-simulator/model"
@@ -30,17 +29,4 @@ func SendPvData(dataPkg *model.DataPkg, targetUrl string) {
 	if strings.Compare(resp.Status, "200 OK") == 0 {
 		fmt.Printf("Sent to %s !!\n", url)
 	}
-}
-
-func getPvWithData(id int, baseTemp float64, baseHz float64, t time.Time) *model.Pv {
-
-	pvId := id
-	pvGen := getSimulatedGen(t.Hour(), t.Minute())
-	pvHz := genSimulatedHz()
-	pvTemp := addSomeMinorTempDifference(baseTemp)
-	pvModuleTemp := addSomeMinorTempDifference(pvTemp)
-
-	newPv := &model.Pv{Id: pvId, GenkW: pvGen, Hz: pvHz, Temp: pvTemp, ModuleTemp: pvModuleTemp, Time: timeToRFC3339(t)}
-
-	return newPv
 }

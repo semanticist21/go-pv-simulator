@@ -8,7 +8,7 @@ import (
 
 // range 0~150kw
 func getSimulatedGen(hour int, min int) float64 {
-	hours := float64(hour) + float64(min/60)
+	hours := getFloatHours(hour, min/60)
 	coefficient := getSunCoefficient(hours)
 
 	s1 := rand.NewSource(time.Now().UnixNano())
@@ -42,14 +42,18 @@ func genSimulatedHz() float64 {
 	return base + random
 }
 
-func genSimulatedTemp() float64 {
-	return 20 + 10*rand.Float64()
+func genSimulatedTemp(hour int, minute int) float64 {
+	return 20 + 10*rand.Float64()*getSunCoefficient(getFloatHours(hour, minute))
 }
 
 func addSomeMinorTempDifference(num float64) float64 {
-	return num + 5*(rand.Float64()-0.5)
+	return num + 1*(rand.Float64()-0.5)
 }
 
 func timeToRFC3339(t time.Time) string {
 	return t.Format(time.RFC3339)
+}
+
+func getFloatHours(hour int, min int) float64 {
+	return float64(hour) + float64(min/60)
 }

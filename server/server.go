@@ -47,18 +47,6 @@ func DataRequestHandler(rw http.ResponseWriter, r *http.Request) {
 		pvData.UnMarshalJson(dataPkg.JsonData)
 
 		fmt.Printf(" Received userID : %d, pvID : %d, GenkW : %f, Hz : %f, Temp : %f, ModuleTemp : %f, Time : %s !!\n", dataPkg.UserId, pvData.Id, pvData.GenkW, pvData.Hz, pvData.Temp, pvData.ModuleTemp, pvData.Time)
-
-		// fmt.Println(dataPkg.UserId)
-		// fmt.Println(dataPkg.Token)
 	}
-	// fmt.Println(r.URL.Path)
-	// fmt.Println(r.URL.RawQuery)
-	// fmt.Println(r.URL.Path)
-	// fmt.Println(r.URL.Query()) // url values
-	// fmt.Println(reflect.TypeOf(r.URL.Query()))
 
-	// token=test``
-	// /users/3/data
-	// map[token:[test]]
-	// url.Values
 }
