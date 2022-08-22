@@ -18,7 +18,7 @@ func StartTestServer(targetUrl *string) {
 
 	go http.ListenAndServe(*targetUrl, nil)
 
-	fmt.Println("Server has been Initialized.")
+	fmt.Println("Test Server has been Initialized.")
 }
 
 func defaultHandler(rw http.ResponseWriter, r *http.Request) {
@@ -32,7 +32,7 @@ func DataRequestHandler(rw http.ResponseWriter, r *http.Request) {
 		token := data["token"][0]
 
 		if token != "test" {
-			fmt.Printf("token is not correct :: %s was given.\n", token)
+			fmt.Printf("Token is not correct :: %s was given.\n", token)
 		}
 
 		reqBody, err := ioutil.ReadAll(r.Body)
@@ -45,6 +45,8 @@ func DataRequestHandler(rw http.ResponseWriter, r *http.Request) {
 
 		pvData := new(model.Pv)
 		pvData.UnMarshalJson(dataPkg.JsonData)
+
+		fmt.Printf(" Received userID : %d, pvID : %d, GenkW : %f, Hz : %f, Temp : %f, ModuleTemp : %f, Time : %s !!\n", dataPkg.UserId, pvData.Id, pvData.GenkW, pvData.Hz, pvData.Temp, pvData.ModuleTemp, pvData.Time)
 
 		// fmt.Println(dataPkg.UserId)
 		// fmt.Println(dataPkg.Token)
