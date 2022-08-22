@@ -47,7 +47,9 @@ func main() {
 	UpperedAnswer := strings.ToUpper(answer)
 
 	var targetUrl *string = comm.Make(addr)
-	fmt.Printf("target url is %s\n", *targetUrl)
+	fmt.Printf("Target url is %s.\n", *targetUrl)
+	fmt.Println("Default user id : 100")
+	fmt.Println("Default user token : test")
 
 	if strings.TrimSpace(UpperedAnswer) == "Y" {
 		server.StartTestServer(targetUrl)

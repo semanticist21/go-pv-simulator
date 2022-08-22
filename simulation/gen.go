@@ -43,7 +43,7 @@ func genSimulatedHz() float64 {
 }
 
 func genSimulatedTemp(hour int, minute int) float64 {
-	return 20 + 10*rand.Float64()*getSunCoefficient(getFloatHours(hour, minute))
+	return 20 + 5*rand.Float64()*getSunCoefficient(getFloatHours(hour, minute))
 }
 
 func addSomeMinorTempDifference(num float64) float64 {
