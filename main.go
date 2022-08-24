@@ -53,6 +53,7 @@ func main() {
 	fmt.Printf("Target url is %s.\n", *targetUrl)
 	fmt.Printf("Default user id : %d.\n", userId)
 	fmt.Printf("Default user token : %s.\n", token)
+	fmt.Printf("URL would be http://%s/{%d}/data?token=%s \n", *targetUrl, userId, token)
 
 	if strings.TrimSpace(UpperedAnswer) == "Y" {
 		server.StartTestServer(targetUrl)
