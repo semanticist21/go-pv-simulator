@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+
 	sc := bufio.NewScanner(os.Stdin)
 
 	fmt.Println("Prompt address to send data. Just Enter for \"localhost:8080\".")
@@ -27,13 +28,13 @@ func main() {
 	var interval int
 
 	for {
-		fmt.Println("Prompt Interval(sec)")
+		fmt.Println("Prompt Interval(sec).")
 		sc.Scan()
 		input := sc.Text()
 		num, err := strconv.Atoi(input)
 
 		if err != nil {
-			fmt.Println("Please prompt number")
+			fmt.Println("Please prompt number.")
 			continue
 		}
 
@@ -41,25 +42,44 @@ func main() {
 		break
 	}
 
-	fmt.Println("If test, prompt Y")
+	// var token string
+
+	// for {
+	// 	fmt.Println("Prompt auth token. default :: test")
+	// 	sc.Scan()
+	// 	input := sc.Text()
+
+	// 	t := reflect.TypeOf(input).Kind()
+
+	// 	if t != reflect.String {
+	// 		fmt.Println("Prompt auth token.")
+	// 		continue
+	// 	}
+
+	// 	token = input
+	// 	break
+	// }
+
+	fmt.Println("If test, prompt Y (Deploy local host server)")
 	sc.Scan()
 	answer := sc.Text()
 	UpperedAnswer := strings.ToUpper(answer)
 
 	var targetUrl *string = comm.Make(addr)
 	userId := 100
-	token := "test"
+	//query parameter
 
 	fmt.Printf("Target url is %s.\n", *targetUrl)
 	fmt.Printf("Default user id : %d.\n", userId)
-	fmt.Printf("Default user token : %s.\n", token)
-	fmt.Printf("URL would be http://%s/{%d}/data?token=%s \n", *targetUrl, userId, token)
+	// fmt.Printf("Default user token : %s.\n", token)
+	fmt.Printf("URL would be http://%s/{%d}/data\n", *targetUrl, userId)
 
 	if strings.TrimSpace(UpperedAnswer) == "Y" {
 		server.StartTestServer(targetUrl)
 	}
 
-	simulation.RunSimulation(interval, userId, token, targetUrl)
+	// simulation.RunSimulation(interval, userId, token, targetUrl)
+	simulation.RunSimulation(interval, userId, targetUrl)
 
 	// endless loop
 	for {

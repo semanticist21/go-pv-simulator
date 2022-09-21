@@ -3,12 +3,12 @@ package model
 import "encoding/json"
 
 type Pv struct {
-	Id         int     `json:"id"`
-	GenkW      float64 `json:"genkW"`
-	Hz         float64 `json:"hz"`
-	Temp       float64 `json:"temp"`
-	ModuleTemp float64 `json:"moduleTemp"`
-	Time       string  `json:"time"`
+	Id         int     `json:"Id"`
+	GenkW      float64 `json:"HenkW"`
+	Hz         float64 `json:"Hz"`
+	Temp       float64 `json:"Temp"`
+	ModuleTemp float64 `json:"ModuleTemp"`
+	Time       string  `json:"Time"`
 }
 
 func (p *Pv) MarshalJson() ([]byte, error) {
