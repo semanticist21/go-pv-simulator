@@ -4,6 +4,7 @@ import "encoding/json"
 
 type DataPkg struct {
 	UserId   int    `json:"UserId"`
+	UserNm   string `json:"UserNm"`
 	Token    string `json:"Token"`
 	JsonData []byte `json:"JsonData"`
 }

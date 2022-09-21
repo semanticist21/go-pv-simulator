@@ -13,7 +13,7 @@ import (
 	"github.com/semanticist21/go-pv-simulator/model"
 )
 
-func RunSimulation(secInterval int, userId int, targetUrl *string) {
+func RunSimulation(secInterval int, userId int, userNm *string, targetUrl *string) {
 	ticker := time.NewTicker(time.Second * time.Duration(secInterval))
 
 	fmt.Println("Sending data has been started.")
@@ -32,8 +32,8 @@ func RunSimulation(secInterval int, userId int, targetUrl *string) {
 			jsonA, _ := pvOne.MarshalJson()
 			jsonB, _ := pvTwo.MarshalJson()
 
-			dataA := &model.DataPkg{UserId: userId, JsonData: jsonA}
-			dataB := &model.DataPkg{UserId: userId, JsonData: jsonB}
+			dataA := &model.DataPkg{UserId: userId, UserNm: *userNm, JsonData: jsonA}
+			dataB := &model.DataPkg{UserId: userId, UserNm: *userNm, JsonData: jsonB}
 
 			go SendPvData(dataA, *targetUrl)
 			go SendPvData(dataB, *targetUrl)

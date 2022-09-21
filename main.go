@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -42,6 +43,39 @@ func main() {
 		break
 	}
 
+	var userId int
+
+	for {
+		fmt.Println("Prompt user id.")
+		sc.Scan()
+		input := sc.Text()
+		num, err := strconv.Atoi(input)
+
+		if err != nil {
+			fmt.Println("Please prompt number.")
+			continue
+		}
+
+		userId = num
+		break
+	}
+
+	var userNm *string
+
+	for {
+		fmt.Println("Prompt name.")
+		sc.Scan()
+		input := sc.Text()
+
+		if reflect.String != reflect.TypeOf(input).Kind() {
+			fmt.Println("Please prompt number.")
+			continue
+		}
+
+		userNm = comm.Make(input)
+		break
+	}
+
 	// var token string
 
 	// for {
@@ -66,11 +100,11 @@ func main() {
 	UpperedAnswer := strings.ToUpper(answer)
 
 	var targetUrl *string = comm.Make(addr)
-	userId := 100
 	//query parameter
 
 	fmt.Printf("Target url is %s.\n", *targetUrl)
-	fmt.Printf("Default user id : %d.\n", userId)
+	fmt.Printf("User id : %d.\n", userId)
+	fmt.Printf("User Name : %s.\n", userNm)
 	// fmt.Printf("Default user token : %s.\n", token)
 	fmt.Printf("URL would be http://%s/{%d}/data\n", *targetUrl, userId)
 
@@ -79,7 +113,7 @@ func main() {
 	}
 
 	// simulation.RunSimulation(interval, userId, token, targetUrl)
-	simulation.RunSimulation(interval, userId, targetUrl)
+	simulation.RunSimulation(interval, userId, userNm, targetUrl)
 
 	// endless loop
 	for {
