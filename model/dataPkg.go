@@ -3,8 +3,8 @@ package model
 import "encoding/json"
 
 type DataPkg struct {
-	UserId int    `json:"UserId"`
-	UserNm string `json:"UserNm"`
+	UserId int `json:"UserId"`
+	// UserNm string `json:"UserNm"`
 	// Token    string `json:"Token"`
 	JsonData Pv `json:"JsonData"`
 }

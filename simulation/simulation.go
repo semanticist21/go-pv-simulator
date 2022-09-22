@@ -12,30 +12,39 @@ import (
 	"github.com/semanticist21/go-pv-simulator/model"
 )
 
-func RunSimulation(secInterval int, userId int, userNm *string, targetUrl *string) {
+func RunSimulation(secInterval int, targetUrl *string, cnt int, token *string) {
 	ticker := time.NewTicker(time.Second * time.Duration(secInterval))
 
 	fmt.Println("Sending data has been started.")
 
 	go func() {
 		for t := range ticker.C {
-			pvIdOne := 1
-			pvIdTwo := 2
+			for i := 0; i < cnt; i++ {
+				pvId := i
+				baseTemp := genSimulatedTemp(t.Hour(), t.Minute())
+				baseHz := genSimulatedHz()
 
-			baseTemp := genSimulatedTemp(t.Hour(), t.Minute())
-			baseHz := genSimulatedHz()
+				pv := getPvWithData(pvId, baseTemp, baseHz, t)
+				go SendPvData(pv, targetUrl, token)
+			}
 
-			pvOne := getPvWithData(pvIdOne, baseTemp, baseHz, t)
-			pvTwo := getPvWithData(pvIdTwo, baseTemp, baseHz, t)
+			// pvIdOne := 1
+			// pvIdTwo := 2
 
-			jsonA := pvOne
-			jsonB := pvTwo
+			// baseTemp := genSimulatedTemp(t.Hour(), t.Minute())
+			// baseHz := genSimulatedHz()
 
-			dataA := &model.DataPkg{UserId: userId, UserNm: *userNm, JsonData: *jsonA}
-			dataB := &model.DataPkg{UserId: userId, UserNm: *userNm, JsonData: *jsonB}
+			// pvOne := getPvWithData(pvIdOne, baseTemp, baseHz, t)
+			// pvTwo := getPvWithData(pvIdTwo, baseTemp, baseHz, t)
 
-			go SendPvData(dataA, *targetUrl)
-			go SendPvData(dataB, *targetUrl)
+			// jsonA := pvOne
+			// jsonB := pvTwo
+
+			// dataA := &model.DataPkg{UserId: userId, JsonData: *jsonA}
+			// dataB := &model.DataPkg{UserId: userId, JsonData: *jsonB}
+
+			// go SendPvData(pvOne, *targetUrl)
+			// go SendPvData(pvTwo, *targetUrl)
 		}
 	}()
 }
@@ -109,9 +118,9 @@ func getFloatHours(hour int, min int) float64 {
 //send data
 // var protocol *string = comm.Make("http://")
 
-func SendPvData(dataPkg *model.DataPkg, targetUrl string) {
+func SendPvData(dataPkg *model.Pv, targetUrl *string, token *string) {
 	// targetUrlWithProtocol := *protocol + targetUrl
-	url := fmt.Sprintf("%s/%d/data", targetUrl, dataPkg.UserId)
+	url := fmt.Sprintf("%s/data/reg?token=%s", *targetUrl, *token)
 
 	result, _ := dataPkg.MarshalJson()
 	buff := bytes.NewBuffer(result)

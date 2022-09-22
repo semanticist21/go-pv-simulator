@@ -4,11 +4,11 @@ import "encoding/json"
 
 type Pv struct {
 	PvId       int     `json:"PvId"`
+	Time       string  `json:"Time"`
 	GenkW      float64 `json:"GenkW"`
 	Hz         float64 `json:"Hz"`
 	Temp       float64 `json:"Temp"`
 	ModuleTemp float64 `json:"ModuleTemp"`
-	Time       string  `json:"Time"`
 }
 
 func (p *Pv) MarshalJson() ([]byte, error) {
