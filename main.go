@@ -104,7 +104,7 @@ func main() {
 
 	fmt.Printf("Target url is %s.\n", *targetUrl)
 	fmt.Printf("User id : %d.\n", userId)
-	fmt.Printf("User Name : %s.\n", userNm)
+	fmt.Printf("User Name : %s.\n", *userNm)
 	// fmt.Printf("Default user token : %s.\n", token)
 	fmt.Printf("URL would be http://%s/{%d}/data\n", *targetUrl, userId)
 

@@ -3,8 +3,8 @@ package model
 import "encoding/json"
 
 type Pv struct {
-	Id         int     `json:"Id"`
-	GenkW      float64 `json:"HenkW"`
+	PvId       int     `json:"PvId"`
+	GenkW      float64 `json:"GenkW"`
 	Hz         float64 `json:"Hz"`
 	Temp       float64 `json:"Temp"`
 	ModuleTemp float64 `json:"ModuleTemp"`

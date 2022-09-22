@@ -32,8 +32,8 @@ func RunSimulation(secInterval int, userId int, userNm *string, targetUrl *strin
 			jsonA, _ := pvOne.MarshalJson()
 			jsonB, _ := pvTwo.MarshalJson()
 
-			dataA := &model.DataPkg{UserId: userId, UserNm: *userNm, JsonData: jsonA}
-			dataB := &model.DataPkg{UserId: userId, UserNm: *userNm, JsonData: jsonB}
+			dataA := &model.DataPkg{UserNm: *userNm, JsonData: jsonA}
+			dataB := &model.DataPkg{UserNm: *userNm, JsonData: jsonB}
 
 			go SendPvData(dataA, *targetUrl)
 			go SendPvData(dataB, *targetUrl)
