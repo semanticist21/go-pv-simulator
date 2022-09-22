@@ -3,10 +3,10 @@ package model
 import "encoding/json"
 
 type DataPkg struct {
-	UserId   int    `json:"UserId"`
-	UserNm   string `json:"UserNm"`
-	Token    string `json:"Token"`
-	JsonData []byte `json:"JsonData"`
+	UserId int    `json:"UserId"`
+	UserNm string `json:"UserNm"`
+	// Token    string `json:"Token"`
+	JsonData Pv `json:"JsonData"`
 }
 
 func (d *DataPkg) MarshalJson() ([]byte, error) {

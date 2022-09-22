@@ -44,7 +44,7 @@ func DataRequestHandler(rw http.ResponseWriter, r *http.Request) {
 		dataPkg.UnMarshalJson(reqBody)
 
 		pvData := new(model.Pv)
-		pvData.UnMarshalJson(dataPkg.JsonData)
+		pvData = &dataPkg.JsonData
 
 		fmt.Printf(" Received userID : %d, pvID : %d, GenkW : %f, Hz : %f, Temp : %f, ModuleTemp : %f, Time : %s !!\n", dataPkg.UserId, pvData.PvId, pvData.GenkW, pvData.Hz, pvData.Temp, pvData.ModuleTemp, pvData.Time)
 	}

@@ -17,19 +17,20 @@ func main() {
 
 	sc := bufio.NewScanner(os.Stdin)
 
-	fmt.Println("Prompt address to send data. Just Enter for \"localhost:8080\".")
+	fmt.Println("Prompt full address to send data. Just enter for \"localhost:8080\".")
+	fmt.Println("Include Protocol. https://")
 	sc.Scan()
 	addr := sc.Text()
 
 	if addr == "" {
-		fmt.Println("localhost:8080 was selected.")
-		addr = "localhost:8080"
+		fmt.Println("http://localhost:8080 was selected.")
+		addr = "http://localhost:8080"
 	}
 
 	var interval int
 
 	for {
-		fmt.Println("Prompt Interval(sec).")
+		fmt.Println("Prompt interval(sec).")
 		sc.Scan()
 		input := sc.Text()
 		num, err := strconv.Atoi(input)
@@ -94,7 +95,7 @@ func main() {
 	// 	break
 	// }
 
-	fmt.Println("If test, prompt Y (Deploy local host server)")
+	fmt.Println("If test, prompt Y (Will deploy local host server)")
 	sc.Scan()
 	answer := sc.Text()
 	UpperedAnswer := strings.ToUpper(answer)
@@ -106,7 +107,7 @@ func main() {
 	fmt.Printf("User id : %d.\n", userId)
 	fmt.Printf("User Name : %s.\n", *userNm)
 	// fmt.Printf("Default user token : %s.\n", token)
-	fmt.Printf("URL would be http://%s/{%d}/data\n", *targetUrl, userId)
+	fmt.Printf("URL would be %s/%d/data\n", *targetUrl, userId)
 
 	if strings.TrimSpace(UpperedAnswer) == "Y" {
 		server.StartTestServer(targetUrl)

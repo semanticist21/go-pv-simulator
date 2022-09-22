@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/semanticist21/go-pv-simulator/comm"
 	"github.com/semanticist21/go-pv-simulator/model"
 )
 
@@ -29,11 +28,11 @@ func RunSimulation(secInterval int, userId int, userNm *string, targetUrl *strin
 			pvOne := getPvWithData(pvIdOne, baseTemp, baseHz, t)
 			pvTwo := getPvWithData(pvIdTwo, baseTemp, baseHz, t)
 
-			jsonA, _ := pvOne.MarshalJson()
-			jsonB, _ := pvTwo.MarshalJson()
+			jsonA := pvOne
+			jsonB := pvTwo
 
-			dataA := &model.DataPkg{UserNm: *userNm, JsonData: jsonA}
-			dataB := &model.DataPkg{UserNm: *userNm, JsonData: jsonB}
+			dataA := &model.DataPkg{UserId: userId, UserNm: *userNm, JsonData: *jsonA}
+			dataB := &model.DataPkg{UserId: userId, UserNm: *userNm, JsonData: *jsonB}
 
 			go SendPvData(dataA, *targetUrl)
 			go SendPvData(dataB, *targetUrl)
@@ -108,11 +107,11 @@ func getFloatHours(hour int, min int) float64 {
 }
 
 //send data
-var protocol *string = comm.Make("http://")
+// var protocol *string = comm.Make("http://")
 
 func SendPvData(dataPkg *model.DataPkg, targetUrl string) {
-	targetUrlWithProtocol := *protocol + targetUrl
-	url := fmt.Sprintf("%s/users/%d/data?token=%s", targetUrlWithProtocol, dataPkg.UserId, dataPkg.Token)
+	// targetUrlWithProtocol := *protocol + targetUrl
+	url := fmt.Sprintf("%s/%d/data", targetUrl, dataPkg.UserId)
 
 	result, _ := dataPkg.MarshalJson()
 	buff := bytes.NewBuffer(result)
@@ -128,5 +127,7 @@ func SendPvData(dataPkg *model.DataPkg, targetUrl string) {
 		if !strings.Contains(url, "localhost") {
 			fmt.Printf("Sent to %s !!\n", url)
 		}
+	} else if strings.Contains(resp.Status, "Not") || strings.Contains(resp.Status, "404") {
+		fmt.Printf("Error :: %s\n", resp.Status)
 	}
 }
