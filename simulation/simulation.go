@@ -49,7 +49,7 @@ func getPvWithData(id int, baseTemp float64, baseHz float64, t time.Time) *model
 	pvTemp := addSomeMinorTempDifference(baseTemp)
 	pvModuleTemp := addSomeMinorTempDifference(pvTemp)
 
-	newPv := &model.Pv{Id: pvId, GenkW: pvGen, Hz: pvHz, Temp: pvTemp, ModuleTemp: pvModuleTemp, Time: timeToRFC3339(t)}
+	newPv := &model.Pv{PvId: pvId, GenkW: pvGen, Hz: pvHz, Temp: pvTemp, ModuleTemp: pvModuleTemp, Time: timeToRFC3339(t)}
 
 	return newPv
 }
