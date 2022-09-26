@@ -4,7 +4,7 @@ import "encoding/json"
 
 type Pv struct {
 	PvId       int     `json:"PvId"`
-	Time       string  `json:"Time"`
+	Time       string  `json:"Date"`
 	GenkW      float64 `json:"GenkW"`
 	Hz         float64 `json:"Hz"`
 	Temp       float64 `json:"Temp"`

@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/semanticist21/go-pv-simulator/comm"
-	"github.com/semanticist21/go-pv-simulator/server"
 	"github.com/semanticist21/go-pv-simulator/simulation"
 )
 
@@ -16,20 +15,33 @@ func main() {
 
 	sc := bufio.NewScanner(os.Stdin)
 
+	// address
+	var addr string
 	fmt.Println("Prompt full address to send data. Just enter for \"localhost:8080\".")
-	fmt.Println("Include Protocol. https://")
-	sc.Scan()
-	addr := sc.Text()
-
-	if addr == "" {
-		fmt.Println("http://localhost:8080 was selected.")
-		addr = "http://localhost:8080"
-	}
-
-	var interval int
 
 	for {
-		fmt.Println("Prompt interval(sec).")
+		sc.Scan()
+		input := sc.Text()
+
+		if !strings.Contains(input, "http") {
+			fmt.Println("Include Protocol. https://")
+			continue
+		}
+
+		if input == "" {
+			fmt.Println("http://localhost:8080 was selected.")
+			addr = "http://localhost:8080"
+		}
+
+		addr = input
+		break
+	}
+
+	// interval
+	var interval int
+	fmt.Println("Prompt interval(sec).")
+
+	for {
 		sc.Scan()
 		input := sc.Text()
 		num, err := strconv.Atoi(input)
@@ -43,10 +55,11 @@ func main() {
 		break
 	}
 
+	// pv
+	fmt.Println("How many PVs to generate?")
 	var cnt int
 
 	for {
-		fmt.Println("Prompt number of pv.")
 		sc.Scan()
 		input := sc.Text()
 		num, err := strconv.Atoi(input)
@@ -65,6 +78,7 @@ func main() {
 		break
 	}
 
+	// Deleted user Id
 	// var userId int
 
 	// for {
@@ -98,45 +112,43 @@ func main() {
 	// 	break
 	// }
 
-	// var token string
+	var pwdToken string
 
-	// for {
-	// 	fmt.Println("Prompt auth token. default :: test")
-	// 	sc.Scan()
-	// 	input := sc.Text()
+	for {
+		defaultToken := "test"
 
-	// 	t := reflect.TypeOf(input).Kind()
+		fmt.Printf("Prompt auth token. default :: %s\n", defaultToken)
+		sc.Scan()
+		input := sc.Text()
 
-	// 	if t != reflect.String {
-	// 		fmt.Println("Prompt auth token.")
-	// 		continue
-	// 	}
+		if input == "" {
+			input = defaultToken
+		}
 
-	// 	token = input
-	// 	break
-	// }
+		pwdToken = input
+		break
+	}
 
-	fmt.Println("If test, prompt Y (Will deploy local host server)")
-	sc.Scan()
-	answer := sc.Text()
-	UpperedAnswer := strings.ToUpper(answer)
+	// fmt.Println("If test, prompt Y (Will deploy local host server)")
+	// sc.Scan()
+	// answer := sc.Text()
+	// TrimmedAnswer := strings.TrimSpace(strings.ToUpper(answer))
 
 	var targetUrl *string = comm.Make(addr)
-	var token *string = comm.Make("swDev")
+	var token *string = comm.Make(pwdToken)
 	//query parameter
 
 	fmt.Printf("Target url is %s.\n", *targetUrl)
 	// fmt.Printf("User id : %d.\n", userId)
 	// fmt.Printf("User Name : %s.\n", *userNm)
-	// fmt.Printf("Default user token : %s.\n", token)
+	fmt.Printf("Default user token : %s.\n", *token)
 	// fmt.Printf("User Reg URL would be %s/user/reg\n", *targetUrl)
 	fmt.Printf("PV Data URL would be %s/data/reg?token=%s\n", *targetUrl, *token)
 
-	if strings.TrimSpace(UpperedAnswer) == "Y" {
-		server.StartTestServer(targetUrl)
-	}
+	// if TrimmedAnswer == "Y" {
+	// 	server.StartTestServer(targetUrl)
+	// }
 
-	// simulation.RunSimulation(interval, userId, token, targetUrl)
 	simulation.RunSimulation(interval, targetUrl, cnt, token)
 
 	// endless loop

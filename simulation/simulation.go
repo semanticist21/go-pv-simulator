@@ -52,7 +52,7 @@ func RunSimulation(secInterval int, targetUrl *string, cnt int, token *string) {
 func getPvWithData(id int, baseTemp float64, baseHz float64, t time.Time) *model.Pv {
 
 	pvId := id
-	pvGen := getSimulatedGen(t.Hour(), t.Minute())
+	pvGen := getSimulatedGen(t)
 	pvHz := genSimulatedHz()
 	pvTemp := addSomeMinorTempDifference(baseTemp)
 	pvModuleTemp := addSomeMinorTempDifference(pvTemp)
@@ -64,15 +64,28 @@ func getPvWithData(id int, baseTemp float64, baseHz float64, t time.Time) *model
 
 // gen
 // range 0~150kw
-func getSimulatedGen(hour int, min int) float64 {
+func getSimulatedGen(t time.Time) float64 {
+	day := t.Day()
+	hour := t.Hour()
+	min := t.Minute()
+
 	hours := getFloatHours(hour, min/60)
 	coefficient := getSunCoefficient(hours)
+
+	//cloud
+	s0 := rand.NewSource(int64(day))
+	r0 := rand.New(s0)
+
+	cloud := r0.Float64()
+	if cloud <= 0.4 {
+		cloud = 0.4
+	}
 
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 
 	randFloat := r1.Float64()
-	baseGen := 120 + (randFloat * 30)
+	baseGen := (120 + (randFloat * 30)) * cloud
 
 	return baseGen * coefficient
 }
@@ -104,7 +117,7 @@ func genSimulatedTemp(hour int, minute int) float64 {
 }
 
 func addSomeMinorTempDifference(num float64) float64 {
-	return num + 1*(rand.Float64()-0.5)
+	return num + 0.2*(rand.Float64()-0.5)
 }
 
 func timeToRFC3339(t time.Time) string {
@@ -128,7 +141,7 @@ func SendPvData(dataPkg *model.Pv, targetUrl *string, token *string) {
 	resp, err := http.Post(url, "application/json", buff)
 
 	if err != nil {
-		fmt.Println("error :" + err.Error())
+		fmt.Println("Error ::" + err.Error())
 		return
 	}
 
@@ -136,7 +149,7 @@ func SendPvData(dataPkg *model.Pv, targetUrl *string, token *string) {
 		if !strings.Contains(url, "localhost") {
 			fmt.Printf("Sent to %s !!\n", url)
 		}
-	} else if strings.Contains(resp.Status, "Not") || strings.Contains(resp.Status, "404") {
+	} else {
 		fmt.Printf("Error :: %s\n", resp.Status)
 	}
 }
