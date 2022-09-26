@@ -13,8 +13,28 @@ import (
 
 func main() {
 
+	fmt.Println("Real-time? -> Y, ")
 	sc := bufio.NewScanner(os.Stdin)
 
+	sc.Scan()
+	answer := getTrimmed(sc.Text())
+
+	if answer == "Y" {
+		genRealtime(sc)
+	} else {
+		putSimulatedData(sc)
+	}
+
+	// endless loop
+	for {
+	}
+}
+
+func putSimulatedData(sc *bufio.Scanner) {
+	panic("unimplemented")
+}
+
+func genRealtime(sc *bufio.Scanner) {
 	// address
 	var addr string
 	fmt.Println("Prompt full address to send data. Just enter for \"localhost:8080\".")
@@ -139,19 +159,18 @@ func main() {
 	//query parameter
 
 	fmt.Printf("Target url is %s.\n", *targetUrl)
+	fmt.Printf("Default user token : %s.\n", *token)
+	fmt.Printf("PV Data URL would be %s/data/reg?token=%s\n", *targetUrl, *token)
 	// fmt.Printf("User id : %d.\n", userId)
 	// fmt.Printf("User Name : %s.\n", *userNm)
-	fmt.Printf("Default user token : %s.\n", *token)
-	// fmt.Printf("User Reg URL would be %s/user/reg\n", *targetUrl)
-	fmt.Printf("PV Data URL would be %s/data/reg?token=%s\n", *targetUrl, *token)
 
 	// if TrimmedAnswer == "Y" {
 	// 	server.StartTestServer(targetUrl)
 	// }
 
 	simulation.RunSimulation(interval, targetUrl, cnt, token)
+}
 
-	// endless loop
-	for {
-	}
+func getTrimmed(val string) string {
+	return strings.TrimSpace(strings.ToUpper(val))
 }
