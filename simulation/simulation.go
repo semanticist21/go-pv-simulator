@@ -15,7 +15,7 @@ import (
 func RunSimulationRealtime(secInterval int, quantity int, token *string, targetUrl *string) {
 	ticker := time.NewTicker(time.Second * time.Duration(secInterval))
 
-	fmt.Println("Sending data has been started.")
+	fmt.Println("Sending data real-time has been started.")
 
 	go func() {
 		for t := range ticker.C {
@@ -49,8 +49,23 @@ func RunSimulationRealtime(secInterval int, quantity int, token *string, targetU
 	}()
 }
 
-func BatchData(minInterval int, cnt int, quantity int, token *string, targetUrl *string) {
+//
+func BatchData(minInterval int, pvCnt int, quantity int, token *string, targetUrl *string) {
+	current := time.Now()
+	timeFactor := time.Duration(minInterval) * time.Minute
 
+	for i := 0; i < pvCnt; i++ {
+		for j := 0; j < quantity; j++ {
+			genTime := current.Add(-timeFactor * time.Duration(quantity-j-1))
+
+			pvId := i
+			baseTemp := genSimulatedTemp(genTime.Hour(), genTime.Minute())
+			baseHz := genSimulatedHz()
+
+			pv := getPvWithData(pvId, baseTemp, baseHz, genTime)
+			go SendPvData(pv, targetUrl, token)
+		}
+	}
 }
 
 func getPvWithData(id int, baseTemp float64, baseHz float64, t time.Time) *model.Pv {

@@ -52,8 +52,8 @@ func main() {
 }
 
 func batchSimulatedData(sc *bufio.Scanner, addr *string) {
-	fmt.Println("It will batch data as by 30min.")
-	fmt.Println("Prompt interval(min)")
+	fmt.Println("It will batch data.")
+	fmt.Println("Prompt interval(min).")
 	interval := promptNum(sc)
 	cnt := promptPvCount(sc)
 
@@ -65,7 +65,7 @@ func batchSimulatedData(sc *bufio.Scanner, addr *string) {
 		num, err := strconv.Atoi(input)
 
 		if err != nil {
-			fmt.Println("Please prompt number")
+			fmt.Println("Please prompt number.")
 		}
 
 		quantity = num
@@ -75,7 +75,6 @@ func batchSimulatedData(sc *bufio.Scanner, addr *string) {
 	pwdToken := promptToken(sc)
 
 	simulation.BatchData(interval, cnt, quantity, &pwdToken, addr)
-
 }
 
 func genRealtime(sc *bufio.Scanner, addr *string) {
@@ -174,8 +173,6 @@ func promptToken(sc *bufio.Scanner) string {
 
 func promptNum(sc *bufio.Scanner) int {
 	var interval int
-
-	fmt.Println("Prompt interval(sec).")
 
 	for {
 		sc.Scan()
