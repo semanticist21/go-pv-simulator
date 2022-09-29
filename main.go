@@ -15,14 +15,14 @@ func main() {
 	sc := bufio.NewScanner(os.Stdin)
 
 	var addr string
-	fmt.Println("Prompt full address to send data. Just enter for \"localhost:8080\".")
+	fmt.Println("Prompt full address to send data. Just enter for \"http://localhost:8080\".")
 
 	for {
 		sc.Scan()
 		input := sc.Text()
 
 		if !strings.Contains(input, "http") {
-			fmt.Println("Include Protocol. https://")
+			fmt.Println("Include Protocol. like https://")
 			continue
 		}
 
@@ -53,7 +53,7 @@ func main() {
 
 func batchSimulatedData(sc *bufio.Scanner, addr *string) {
 	fmt.Println("It will batch data.")
-	fmt.Println("Prompt interval(min).")
+	fmt.Println("Prompt data interval(min).")
 	interval := promptNum(sc)
 	cnt := promptPvCount(sc)
 

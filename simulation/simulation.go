@@ -64,6 +64,7 @@ func BatchData(minInterval int, pvCnt int, quantity int, token *string, targetUr
 
 			pv := getPvWithData(pvId, baseTemp, baseHz, genTime)
 			go SendPvData(pv, targetUrl, token)
+			time.Sleep(100 * time.Millisecond)
 		}
 	}
 }
