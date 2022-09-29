@@ -12,14 +12,14 @@ import (
 	"github.com/semanticist21/go-pv-simulator/model"
 )
 
-func RunSimulation(secInterval int, targetUrl *string, cnt int, token *string) {
+func RunSimulationRealtime(secInterval int, quantity int, token *string, targetUrl *string) {
 	ticker := time.NewTicker(time.Second * time.Duration(secInterval))
 
 	fmt.Println("Sending data has been started.")
 
 	go func() {
 		for t := range ticker.C {
-			for i := 0; i < cnt; i++ {
+			for i := 0; i < quantity; i++ {
 				pvId := i
 				baseTemp := genSimulatedTemp(t.Hour(), t.Minute())
 				baseHz := genSimulatedHz()
@@ -47,6 +47,10 @@ func RunSimulation(secInterval int, targetUrl *string, cnt int, token *string) {
 			// go SendPvData(pvTwo, *targetUrl)
 		}
 	}()
+}
+
+func BatchData(minInterval int, cnt int, quantity int, token *string, targetUrl *string) {
+
 }
 
 func getPvWithData(id int, baseTemp float64, baseHz float64, t time.Time) *model.Pv {

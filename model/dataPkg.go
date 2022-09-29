@@ -2,6 +2,7 @@ package model
 
 import "encoding/json"
 
+// not used
 type DataPkg struct {
 	UserId int `json:"UserId"`
 	// UserNm string `json:"UserNm"`

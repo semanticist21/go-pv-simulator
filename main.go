@@ -7,35 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/semanticist21/go-pv-simulator/comm"
 	"github.com/semanticist21/go-pv-simulator/simulation"
 )
 
 func main() {
-
-	fmt.Println("Real-time? -> Y, ")
+	// address
 	sc := bufio.NewScanner(os.Stdin)
 
-	sc.Scan()
-	answer := getTrimmed(sc.Text())
-
-	if answer == "Y" {
-		genRealtime(sc)
-	} else {
-		putSimulatedData(sc)
-	}
-
-	// endless loop
-	for {
-	}
-}
-
-func putSimulatedData(sc *bufio.Scanner) {
-	panic("unimplemented")
-}
-
-func genRealtime(sc *bufio.Scanner) {
-	// address
 	var addr string
 	fmt.Println("Prompt full address to send data. Just enter for \"localhost:8080\".")
 
@@ -57,48 +35,61 @@ func genRealtime(sc *bufio.Scanner) {
 		break
 	}
 
-	// interval
-	var interval int
-	fmt.Println("Prompt interval(sec).")
+	fmt.Println("Real-time? -> Y, ")
 
+	sc.Scan()
+	answer := getTrimmed(sc.Text())
+
+	if answer == "Y" {
+		genRealtime(sc, &addr)
+	} else {
+		batchSimulatedData(sc, &addr)
+	}
+
+	// endless loop
 	for {
+	}
+}
+
+func batchSimulatedData(sc *bufio.Scanner, addr *string) {
+	fmt.Println("It will batch data as by 30min.")
+	fmt.Println("Prompt interval(min)")
+	interval := promptNum(sc)
+	cnt := promptPvCount(sc)
+
+	var quantity int
+	for {
+		fmt.Println("How many data you want to gen for each Pv?")
 		sc.Scan()
 		input := sc.Text()
 		num, err := strconv.Atoi(input)
 
 		if err != nil {
-			fmt.Println("Please prompt number.")
-			continue
+			fmt.Println("Please prompt number")
 		}
 
-		interval = num
+		quantity = num
 		break
 	}
+
+	pwdToken := promptToken(sc)
+
+	simulation.BatchData(interval, cnt, quantity, &pwdToken, addr)
+
+}
+
+func genRealtime(sc *bufio.Scanner, addr *string) {
+
+	fmt.Println("It will send data real-time.")
+
+	// interval
+	fmt.Println("Prompt interval(sec).")
+	interval := promptNum(sc)
 
 	// pv
-	fmt.Println("How many PVs to generate?")
-	var cnt int
+	cnt := promptPvCount(sc)
 
-	for {
-		sc.Scan()
-		input := sc.Text()
-		num, err := strconv.Atoi(input)
-
-		if err != nil {
-			fmt.Println("Please prompt number.")
-			continue
-		}
-
-		if num <= 0 {
-			fmt.Println("Should not be less than 1.")
-			continue
-		}
-
-		cnt = num
-		break
-	}
-
-	// Deleted user Id
+	// Deleted user Id, no longer used
 	// var userId int
 
 	// for {
@@ -132,6 +123,35 @@ func genRealtime(sc *bufio.Scanner) {
 	// 	break
 	// }
 
+	pwdToken := promptToken(sc)
+
+	// fmt.Println("If test, prompt Y (Will deploy local host server)")
+	// sc.Scan()
+	// answer := sc.Text()
+	// TrimmedAnswer := strings.TrimSpace(strings.ToUpper(answer))
+
+	var targetUrl *string = addr
+	var token *string = &pwdToken
+	//query parameter
+
+	fmt.Printf("Target url is %s.\n", *targetUrl)
+	fmt.Printf("Default user token : %s.\n", *token)
+	fmt.Printf("PV Data URL would be %s/data/reg?token=%s\n", *targetUrl, *token)
+	// fmt.Printf("User id : %d.\n", userId)
+	// fmt.Printf("User Name : %s.\n", *userNm)
+
+	// if TrimmedAnswer == "Y" {
+	// 	server.StartTestServer(targetUrl)
+	// }
+
+	simulation.RunSimulationRealtime(interval, cnt, token, targetUrl)
+}
+
+func getTrimmed(val string) string {
+	return strings.TrimSpace(strings.ToUpper(val))
+}
+
+func promptToken(sc *bufio.Scanner) string {
 	var pwdToken string
 
 	for {
@@ -149,28 +169,58 @@ func genRealtime(sc *bufio.Scanner) {
 		break
 	}
 
-	// fmt.Println("If test, prompt Y (Will deploy local host server)")
-	// sc.Scan()
-	// answer := sc.Text()
-	// TrimmedAnswer := strings.TrimSpace(strings.ToUpper(answer))
-
-	var targetUrl *string = comm.Make(addr)
-	var token *string = comm.Make(pwdToken)
-	//query parameter
-
-	fmt.Printf("Target url is %s.\n", *targetUrl)
-	fmt.Printf("Default user token : %s.\n", *token)
-	fmt.Printf("PV Data URL would be %s/data/reg?token=%s\n", *targetUrl, *token)
-	// fmt.Printf("User id : %d.\n", userId)
-	// fmt.Printf("User Name : %s.\n", *userNm)
-
-	// if TrimmedAnswer == "Y" {
-	// 	server.StartTestServer(targetUrl)
-	// }
-
-	simulation.RunSimulation(interval, targetUrl, cnt, token)
+	return pwdToken
 }
 
-func getTrimmed(val string) string {
-	return strings.TrimSpace(strings.ToUpper(val))
+func promptNum(sc *bufio.Scanner) int {
+	var interval int
+
+	fmt.Println("Prompt interval(sec).")
+
+	for {
+		sc.Scan()
+		input := sc.Text()
+		num, err := strconv.Atoi(input)
+
+		if err != nil {
+			fmt.Println("Please prompt number.")
+			continue
+		}
+
+		if num <= 0 {
+			fmt.Println("Please prompt positive number.")
+			continue
+		}
+
+		interval = num
+		break
+	}
+	return interval
+}
+
+func promptPvCount(sc *bufio.Scanner) int {
+	// pv
+	fmt.Println("How many PVs to generate?")
+	var cnt int
+
+	for {
+		sc.Scan()
+		input := sc.Text()
+		num, err := strconv.Atoi(input)
+
+		if err != nil {
+			fmt.Println("Please prompt number.")
+			continue
+		}
+
+		if num <= 0 {
+			fmt.Println("Should not be less than 1.")
+			continue
+		}
+
+		cnt = num
+		break
+	}
+
+	return cnt
 }

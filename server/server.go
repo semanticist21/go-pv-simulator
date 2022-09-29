@@ -10,6 +10,7 @@ import (
 	"github.com/semanticist21/go-pv-simulator/model"
 )
 
+//not used.
 func StartTestServer(targetUrl *string) {
 	r := mux.NewRouter()
 	r.HandleFunc("/", defaultHandler)
